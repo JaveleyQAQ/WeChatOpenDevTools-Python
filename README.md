@@ -27,7 +27,7 @@
 
 
 ## 食用方法
-> 只支持windows版本微信
+> 只支持windows版本微信，运行前先启动微信运行前先启动微信（建议小号,别被封了。。。）
 1. 安装python3版本
 2. 下载WeChatOpenDevTools-Python 
 

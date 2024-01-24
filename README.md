@@ -67,8 +67,9 @@ python main.py
 
 
 3. 把 [WeChatWin3.9.8.25_x64.zip](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.1/WeChatWin3.9.8.25_x64.zip) 压缩包内容解压到对应的微信版本目录中，替换原文件（记得把原文件重命名备份一份）
+
    ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/08b68600-8323-4b63-a503-a9866533cacf)
 
-4. 到网页调用
+5. 到网页调用
    ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/04053f33-3e88-437b-a5c6-48683c984641)
 

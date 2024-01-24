@@ -1,4 +1,4 @@
-![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/ecee005a-f8f7-4869-94de-bc640baab6fe)![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/97a0c365-f3cf-4ba4-95ca-97f55e6b846e)# 感谢志远大佬的WeChatOpenDevTool开源
+# 感谢志远大佬的WeChatOpenDevTool开源
 代码只是把node改用python3重写，简单实现了一些自动化问题，重要代码都是原作者的。
 
 ### **注意本库只能作为学习用途, 造成的任何问题与本库开发者无关, 如侵犯到你的权益，请联系删除。**

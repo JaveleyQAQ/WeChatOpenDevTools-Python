@@ -73,3 +73,12 @@ python main.py
 5. 到网页调用
    ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/04053f33-3e88-437b-a5c6-48683c984641)
 
+
+
+   -----
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=javeleyqaq/WeChatOpenDevTools-Python&type=Date)](https://star-history.com/#javeleyqaq/WeChatOpenDevTools-Python&Date)
+
+

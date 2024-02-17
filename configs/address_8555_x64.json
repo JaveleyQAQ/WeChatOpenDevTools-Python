@@ -2,5 +2,6 @@
     "LaunchAppletBegin": "0x02A4D52D",
     "WechatAppHtml":"0x28E1E36",
     "WechatWebHtml":"0x7A2E563",
-    "WechatAppExLog":"0x2F20022"
+    "WechatAppExLog":"0x2F20022",
+    "MenuItemDevToolsString":"0x2BC92AE"
 }

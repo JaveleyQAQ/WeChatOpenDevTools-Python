@@ -26,7 +26,7 @@
 
 
 ## 目录
-[1. 开启小程序F12](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
+[1. 开启小程序F12](#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
 
 [2. 开启微信内置浏览器F12](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python#%E5%BC%80%E5%90%AF%E5%BE%AE%E4%BF%A1%E5%86%85%E7%BD%AE%E6%B5%8F%E8%A7%88%E5%99%A8F12)
 
@@ -39,7 +39,7 @@
 > 只支持windows版本微信，运行前先启动微信运行前先启动微信（建议小号,别被封了。。。）
 1. 安装python3版本
 2. 下载WeChatOpenDevTools-Python或直接下载编译好的exe
-[WeChatOpenDevTools_64.exe](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.1/WechatOpenDevTools.exe)
+[WeChatOpenDevTools_64.exe](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/)
 
 安装依赖
 ```

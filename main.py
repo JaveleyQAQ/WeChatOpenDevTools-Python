@@ -13,9 +13,10 @@ def print_colored_message(message, color):
 def main():
     HELPALL = """
     请选择要执行的方法：         
-                        python  main.py -x  开启小程序F12
-                        
-                        python  main.py -c  开启内置浏览器F12
+                        [+] python  main.py -h  查看帮助
+                        [+] python  main.py -x  开启小程序F12              
+                        [+] python  main.py -c  开启内置浏览器F12
+                        [+] python  main.py -all   开启内置浏览器F12与小程序F12
                                      
     """
     parser = argparse.ArgumentParser(description=HELPALL, formatter_class=RawTextHelpFormatter)

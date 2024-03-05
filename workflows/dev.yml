@@ -1,0 +1,183 @@
+name: dev build CI
+
+# Controls when the action will run.
+on:
+  # Triggers the workflow on push or pull request events
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# contains 3 jobs: test, publish_dev_build and notification
+jobs:
+  test:
+    # The type of runner that the job will run on
+    strategy:
+      matrix:
+        python-versions: ['3.8', '3.9', '3.10', '3.11']
+        # github action doesn't goes well with windows due to docker support
+        # github action doesn't goes well with macos due to `no docker command`
+        #os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    # map step outputs to job outputs so they can be share among jobs
+    outputs:
+      package_version: ${{ steps.variables_step.outputs.package_version }}
+      package_name: ${{ steps.variables_step.outputs.package_name }}
+      repo_name: ${{ steps.variables_step.outputs.repo_name }}
+      repo_owner: ${{ steps.variables_step.outputs.repo_owner }}
+      build_number: ${{ steps.variables_step.outputs.build_number }}
+
+    # uncomment the following to pickup services
+    # services:
+    #   redis:
+    #     image: redis
+    #     options: >-
+    #       --health-cmd "redis-cli ping"
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 6379:6379
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-versions }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install tox tox-gh-actions poetry
+
+      # declare package_version, repo_owner, repo_name, package_name so you may use it in web hooks.
+      - name: Declare variables for convenient use
+        id: variables_step
+        run: |
+          echo "repo_owner=${GITHUB_REPOSITORY%/*}" >> $GITHUB_OUTPUT
+          echo "repo_name=${GITHUB_REPOSITORY#*/}" >> $GITHUB_OUTPUT
+          echo "package_name=`poetry version | awk '{print $1}'`" >> $GITHUB_OUTPUT
+          echo "package_version=`poetry version --short`" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: test with tox
+        run: tox
+
+      - uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: true
+
+  publish_dev_build:
+    # if test failed, we should not publish
+    needs: test
+    # you may need to change os below
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install poetry tox tox-gh-actions
+
+      - name: build documentation
+        run: |
+          poetry install -E doc
+          mkdocs build
+          git config --global user.name Docs deploy
+          git config --global user.email docs@dummy.bot.com
+          mike deploy -p -f --ignore "`poetry version --short`.dev"
+          mike set-default -p "`poetry version --short`.dev"
+
+      - name: Build wheels and source tarball
+        run: |
+          poetry version $(poetry version --short)-dev.$GITHUB_RUN_NUMBER
+          poetry lock
+          poetry build
+
+      - name: publish to Test PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ secrets.TEST_PYPI_API_TOKEN}}
+          repository_url: https://test.pypi.org/legacy/
+          skip_existing: true
+
+  notification:
+    needs: [test,publish_dev_build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: martialonline/workflow-status@v2
+        id: check
+
+      - name: build success notification via email
+        if: ${{ steps.check.outputs.status == 'success' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.BUILD_NOTIFY_MAIL_SERVER }}
+          server_port: ${{ secrets.BUILD_NOTIFY_MAIL_PORT }}
+          username: ${{ secrets.BUILD_NOTIFY_MAIL_FROM }}
+          password: ${{ secrets.BUILD_NOTIFY_MAIL_PASSWORD }}
+          from: build-bot
+          to: ${{ secrets.BUILD_NOTIFY_MAIL_RCPT }}
+          subject: ${{ needs.test.outputs.package_name }}.${{ needs.test.outputs.package_version}}.dev.${{ github.run_number }} build successfully
+          convert_markdown: true
+          html_body: |
+            ## Build Success
+            ${{ needs.test.outputs.package_name }}.${{ needs.test.outputs.package_version }}.dev.${{ github.run_number }} is built and published to test pypi
+
+            ## Change Details
+            ${{ github.event.head_commit.message }}
+
+            For more information, please check change history at https://${{ needs.test.outputs.repo_owner }}.github.io/${{ needs.test.outputs.repo_name }}/${{ needs.test.outputs.package_version }}.dev/history
+
+            ## Package Download
+            The pacakge is available at: https://test.pypi.org/project/${{ needs.test.outputs.package_name }}/
+
+      - name: build failure notification via email
+        if: ${{ steps.check.outputs.status == 'failure' }}
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: ${{ secrets.BUILD_NOTIFY_MAIL_SERVER }}
+          server_port: ${{ secrets.BUILD_NOTIFY_MAIL_PORT }}
+          username: ${{ secrets.BUILD_NOTIFY_MAIL_FROM }}
+          password: ${{ secrets.BUILD_NOTIFY_MAIL_PASSWORD }}
+          from: build-bot
+          to: ${{ secrets.BUILD_NOTIFY_MAIL_RCPT }}
+          subject: ${{ needs.test.outputs.package_name }}.${{ needs.test.outputs.package_version}}.dev.${{ github.run_number }} build failure
+          convert_markdown: true
+          html_body: |
+            ## Change Details
+            ${{ github.event.head_commit.message }}
+
+            ## View Log
+            https://github.com/${{ needs.test.outputs.repo_owner }}/${{ needs.test.outputs.repo_name }}/actions
+
+
+      # - name: Dingtalk Robot Notify
+      #   if: always()
+      #   uses: leafney/dingtalk-action@v1.0.0
+      #   env:
+      #     DINGTALK_ACCESS_TOKEN: ${{ secrets.DINGTALK_ACCESS_TOKEN }}
+      #     DINGTALK_SECRET: ${{ secrets.DINGTALK_SECRET }}
+      #   with:
+      #     msgtype: markdown
+      #     title: CI Notification | Success
+      #     text: |
+      #       ### Build Success
+      #       ${{ needs.test.outputs.package_version }}.dev.${{ github.run_number }}published to TEST pypi
+      #       ### Change History
+      #       Please check change history at https://${{ needs.test.outputs.repo_owner }}.github.io/${{ needs.test.outputs.repo_name }}/${{ needs.test.outputs.package_version }}.dev/history
+      #       ### Package Download
+      #       The pacakge is availabled at: https://test.pypi.org/project/${{ needs.test.outputs.repo_name }}/

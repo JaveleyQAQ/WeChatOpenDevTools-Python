@@ -1,0 +1,4 @@
+colorama==0.4.6
+frida==16.1.11
+psutil==5.9.7
+pyfiglet==1.0.2

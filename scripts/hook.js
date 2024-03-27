@@ -70,10 +70,4 @@ Interceptor.attach(address.LaunchAppletBegin, {
 })
 
 
-Interceptor.attach(address.WechatAppHtml, {
-    onEnter(args) {
-        this.context.rdx = address.WechatWebHtml;
-        send("[+] 已还原完整F12")
-    }
-})
-send("[+] WeChatAppEx.exe 注入成功!")
+

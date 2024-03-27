@@ -69,5 +69,26 @@ Interceptor.attach(address.LaunchAppletBegin, {
     }
 })
 
+if(address.WechatVersionSwitch){
+
+	Interceptor.attach(address.WechatVersionSwitch, {
+		onEnter(args) {
+			
+			this.context.r8 = this.context.rax
+			send("[+] 已还原完整F12")
+		}
+	})
+	send("[+] WeChatAppEx.exe 注入成功!")
+
+}else{
+	
+	Interceptor.attach(address.WechatWebHtml, {
+    onEnter(args) {
+		
+		this.context.rdx = address.WechatWebHtml;
+        send("[+] 已还原完整F12")
+    }
+})
+}
 
 

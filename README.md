@@ -89,6 +89,9 @@ python  main.py -c
       3. 最后回到上级目录，设置文件夹权限为只读，这样就能一直保持小程序版本一致
      ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/c2b793c3-6d81-424e-a167-3b1e584cef6f)
 
+* 怎么回退版本？
+  - https://github.com/tom-snow/wechat-windows-versions/releases
+
 
 ## Star History
 

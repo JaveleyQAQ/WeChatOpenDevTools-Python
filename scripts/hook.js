@@ -4,8 +4,10 @@ var base = Process.findModuleByName("WeChatAppEx.exe").base
 
 
 for (let key in address) {
+    
     address[key] = base.add(address[key]); 
 }
+send("[+] WeChatAppEx.exe 注入成功!");
 
 function readStdString(s) {
     var flag = s.add(23).readU8()
@@ -38,7 +40,7 @@ function writeStdString(s, content) {
     }
 }
 
-//过新版8555检测
+// 过新版8555检测
 if(address.MenuItemDevToolsString){
     var menuItemDevToolsStringCr = new Uint8Array(address.MenuItemDevToolsString.readByteArray(7));
    var intptr_ = (menuItemDevToolsStringCr[3] & 0xFF) | ((menuItemDevToolsStringCr[4] & 0xFF) << 8) | ((menuItemDevToolsStringCr[5] & 0xFF) << 16) | ((menuItemDevToolsStringCr[6] & 0xFF) << 24);
@@ -54,7 +56,6 @@ Interceptor.attach(address.LaunchAppletBegin, {
         for (var i = 0; i < 0x1000; i+=8) {
             try {
                 var s = readStdString(args[2].add(i))
-                
                 var s1 = s.replaceAll("md5", "md6")
                     .replaceAll('"enable_vconsole":false', '"enable_vconsole": true')
                     .replaceAll('"frameset":false', '"frameset": true')
@@ -78,17 +79,23 @@ if(address.WechatVersionSwitch){
 			send("[+] 已还原完整F12")
 		}
 	})
-	send("[+] WeChatAppEx.exe 注入成功!")
 
 }else{
 	
-	Interceptor.attach(address.WechatWebHtml, {
-    onEnter(args) {
-		
-		this.context.rdx = address.WechatWebHtml;
-        send("[+] 已还原完整F12")
+	Interceptor.attach(address.WechatAppHtml, {
+    
+        onEnter(args) {
+            try {
+                var _adr = ptr("0x00007FF7920CE5BE");
+                const newData = [0x77, 0x65, 0x62];
+                Memory.protect(_adr, 3, 'rwx');
+                Memory.writeByteArray(_adr, newData);
+                Memory.readByteArray(_adr, 3); 
+                send("[+] 已还原完整F12")
+            } catch (error) {
+                send("发生错误: " + error.message);
+            }
+        
     }
 })
 }
-
-

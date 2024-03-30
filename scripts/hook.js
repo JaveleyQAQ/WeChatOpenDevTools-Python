@@ -115,7 +115,7 @@ if(address.WechatVersionSwitch){
 	            });
 	
 	            this.context.rdx = data
-	
+		    send("[+] 已还原完整F12")
 	
 	}
 	})

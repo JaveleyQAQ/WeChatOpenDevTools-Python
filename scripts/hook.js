@@ -1,11 +1,17 @@
 ;
 //获取WeChatAppEx.exe的基址
-var base = Process.findModuleByName("WeChatAppEx.exe").base
+var module = Process.findModuleByName("WeChatAppEx.exe")
+var base = module.base
+// console.log("模块名称:",module.name);
+// console.log("模块地址:",module.base);
+// console.log("大小:",module.size);
 
 
 for (let key in address) {
+    
     address[key] = base.add(address[key]); 
 }
+send("[+] WeChatAppEx.exe 注入成功!");
 
 function readStdString(s) {
     var flag = s.add(23).readU8()
@@ -38,7 +44,7 @@ function writeStdString(s, content) {
     }
 }
 
-//过新版8555检测
+// 过新版8555检测
 if(address.MenuItemDevToolsString){
     var menuItemDevToolsStringCr = new Uint8Array(address.MenuItemDevToolsString.readByteArray(7));
    var intptr_ = (menuItemDevToolsStringCr[3] & 0xFF) | ((menuItemDevToolsStringCr[4] & 0xFF) << 8) | ((menuItemDevToolsStringCr[5] & 0xFF) << 16) | ((menuItemDevToolsStringCr[6] & 0xFF) << 24);
@@ -54,7 +60,7 @@ Interceptor.attach(address.LaunchAppletBegin, {
         for (var i = 0; i < 0x1000; i+=8) {
             try {
                 var s = readStdString(args[2].add(i))
-                
+                // console.log(s)
                 var s1 = s.replaceAll("md5", "md6")
                     .replaceAll('"enable_vconsole":false', '"enable_vconsole": true')
                     .replaceAll('"frameset":false', '"frameset": true')
@@ -69,6 +75,9 @@ Interceptor.attach(address.LaunchAppletBegin, {
     }
 })
 
+
+
+
 if(address.WechatVersionSwitch){
 
 	Interceptor.attach(address.WechatVersionSwitch, {
@@ -78,17 +87,36 @@ if(address.WechatVersionSwitch){
 			send("[+] 已还原完整F12")
 		}
 	})
-	send("[+] WeChatAppEx.exe 注入成功!")
 
 }else{
+	Interceptor.attach(address.WechatAppHtml, {
+	    
+	    onEnter(args) {
+	            const webhtml= "68 74 74 70 73 3A 2F 2F 61 70 70 6C 65 74 2D 64 65 62 75 67 2E 63 6F 6D 2F 64 65 76 74 6F 6F 6C 73 2F 77 65 63 68 61 74 5F 77 65 62 2E 68 74 6D 6C";
+	            var  data;
+	            Process.enumerateModules({
+	                onMatch: function(module){
+	                    var ranges = module.enumerateRanges('r--');
+	                    for (var i = 0; i < ranges.length; i++) {
+	                            
+	                        var range = ranges[i];
+	                        var scanResults = Memory.scanSync(range.base, range.size, webhtml);
+	                        if (scanResults.length > 0){
+	                            data = scanResults[0].address
+	                            // console.log('Memory.scanSync() result for range ' + range.base + '-' + range.size + ':\n' + JSON.stringify(scanResults));
+	                            }
+	                        }
+	        
+	                },
+	                onComplete: function(){
+	     
+	                }
 	
-	Interceptor.attach(address.WechatWebHtml, {
-    onEnter(args) {
-		
-		this.context.rdx = address.WechatWebHtml;
-        send("[+] 已还原完整F12")
-    }
-})
+	            });
+	
+	            this.context.rdx = data
+		    send("[+] 已还原完整F12")
+	
+	}
+	})
 }
-
-

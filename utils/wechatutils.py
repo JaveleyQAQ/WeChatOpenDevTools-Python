@@ -35,7 +35,8 @@ class WechatUtils:
                     sub_key_name = winreg.EnumKey(reg_key, i)
                     sub_key = winreg.OpenKey(reg_key, sub_key_name)
                     display_name = winreg.QueryValueEx(sub_key, "DisplayName")[0]
-                    if program_name in display_name:
+                    # 排除企业微信 和 适配英文区域安装的WeChat
+                    if program_name == display_name or display_name == 'WeChat':
                         install_location = winreg.QueryValueEx(sub_key, "InstallLocation")[0]+"\WeChat.exe"
                         print(Color.GREEN + f"[+] 查找到{program_name}的安装路径是：{install_location}" + Color.END)
                         print(Color.GREEN + f"[+] 正在尝试重启微信..."+ Color.END)

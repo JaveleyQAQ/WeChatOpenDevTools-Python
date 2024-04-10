@@ -90,6 +90,7 @@ python  main.py -c
      ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/c2b793c3-6d81-424e-a167-3b1e584cef6f)
 
 * 怎么回退版本？
+  - https://weixin.qq.com/cgi-bin/readtemplate?lang=zh_CN&t=weixin_faq_list&head=true
   - https://github.com/tom-snow/wechat-windows-versions/releases
 
 

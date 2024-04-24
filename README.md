@@ -85,11 +85,13 @@ python  main.py -c
 ### 常见问题
 * 无法修改中文
    - yes
-* 提示找不到版本或不支持
+* 提示找不到版本或微信未运行❌
    -  1. 请先看支持的微信版本和小程序版本
-      2. **如果微信版本相同小程序版本不同，就删除小程序版本目录并重启微信，直到刷出支持的小程序版本目录**
-      3. 最后回到上级目录，设置文件夹权限为只读，这样就能一直保持小程序版本一致
+         - 如果还有问题看：[微信版本和小程序版本都是符合要求的，但是仍然显示“未找到匹配版本的微信进程或微信未运行”](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/issues/38)
+      3. **如果微信版本相同小程序版本不同，就删除小程序版本目录并重启微信，直到刷出支持的小程序版本目录**
+      4. 最后回到上级目录，设置文件夹权限为只读，这样就能一直保持小程序版本一致
      ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/c2b793c3-6d81-424e-a167-3b1e584cef6f)
+
 
 * 怎么回退版本？
   - https://weixin.qq.com/cgi-bin/readtemplate?lang=zh_CN&t=weixin_faq_list&head=true

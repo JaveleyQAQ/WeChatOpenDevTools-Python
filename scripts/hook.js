@@ -116,6 +116,7 @@ function setupInterceptor() {
                 }
             })
             break;
+            
         case 9079:
             Interceptor.attach(address.SwitchVersion, {
                 onEnter(args) {
@@ -124,7 +125,18 @@ function setupInterceptor() {
                 }
             })
             break;
-                    
+            
+        case 9115:
+            Interceptor.attach(address.SwitchVersion, {
+                onEnter(args) {
+                    this.context.r8=  this.context.rax
+                    sendMessage()
+                }
+            })
+            break;
+
+
+
         default:
             Interceptor.attach(address.WechatAppHtml, {
                 onEnter(args) {

@@ -6,6 +6,7 @@
 
 ---
 
+
 ## 支持版本
 
 > 感谢志远大佬的WeChatOpenDevTool开源 代码只是把node改用python3重写，简单实现了一些自动化问题，重要代码都是原作者的。
@@ -15,8 +16,8 @@
 | 3.9.10.19_x64    | 9115_x64   | ✅           |
 | 3.9.10.19_x64    | 8555_x64   | ✅           |
 | 3.9.10.19_x64    | 9105_x64   | ✅           |
-| 3.9.9.43_x64     | 8555_x64   | ✅           |
-| 3.9.9.43_x64     | 9079_x64   | ✅           |
+| 3.9.9.43_x64     | 8555_x64   | ❌           |
+| 3.9.9.43_x64     | 9079_x64   | ❌           |
 | 3.9.8.25_x64     | 8531_x64   | ❌           |
 | 3.9.8.25_x64     | 8529_x64   | ❌           |
 | 3.9.8.25_x64     | 8519_x64   | ❌           |
@@ -24,12 +25,28 @@
 | 3.9.8.25_x64     | 8461_x64   | ❌           |
 | 3.9.8.25_x64     | 8447_x64   | ❌           |
 
-如何查看当前运行版本？
+---
 
+
+| Mac x64微信版本              | 是否为最新版   | x             
+| ----------------            | ------------ | ------------ 
+| MacWechat/3.8.7(0x13080712) | ✅           |用前阅读[3. 常见问题](#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)             
+
+
+
+## 如何查看当前运行版本？
+### windows
+  
 ![image](./docs/images/version0.jpg)
 
 ![image](./docs/images/version1.jpg)
 ![image](./docs/images/version2.jpg)
+
+### mac
+```bash
+ps aux | grep 'WeChatAppEx' |  grep -v 'grep' | grep  "wmpf-mojo-handle" 
+```
+
 
 ## 目录
 
@@ -43,7 +60,7 @@
 
 ### 开启小程序F12
 
-> 只支持windows版本微信，运行前先启动微信运行前先启动微信（建议小号,别被封了。。。）
+> ~~只支持windows版本微信~~，运行前先启动微信运行前先启动微信（建议小号,别被封了。。。)
 
 1. 安装python3版本
 2. 下载WeChatOpenDevTools-Python或直接下载编译好的exe
@@ -97,6 +114,11 @@ python  main.py -c
   - https://weixin.qq.com/cgi-bin/readtemplate?lang=zh_CN&t=weixin_faq_list&head=true
   - https://github.com/tom-snow/wechat-windows-versions/releases
 
+
+* mac版本闪退
+  - macOS版本不能和windows版本一样随时hook小程序修改F12，只能先加载小程序后再hook（必须是有小程序缓存了，不然会闪退）
+  - 可以先启动多个需要调试的小程序后再运行软件然后再刷新小程序
+  
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=javeleyqaq/WeChatOpenDevTools-Python&type=Date)](https://star-history.com/#javeleyqaq/WeChatOpenDevTools-Python&Date)

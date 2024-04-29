@@ -30,7 +30,7 @@
 
 | Mac x64微信版本              | 是否为最新版   | x             
 | ----------------            | ------------ | ------------ 
-| MacWechat/3.8.7(0x13080712) | ✅           |用前阅读[3. 常见问题](#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)             
+| MacWechat/3.8.7(0x13080712) | ✅           |用前阅读 [3. 常见问题](#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)             
 
 
 
@@ -108,7 +108,7 @@ python  main.py -c
        - 如果还有问题看：[微信版本和小程序版本都是符合要求的，但是仍然显示“未找到匹配版本的微信进程或微信未运行”](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/issues/38)
     2. **如果微信版本相同小程序版本不同，就删除小程序版本目录并重启微信，直到刷出支持的小程序版本目录**
     3. 最后回到上级目录，设置文件夹权限为只读，这样就能一直保持小程序版本一致
-       ![image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/c2b793c3-6d81-424e-a167-3b1e584cef6f)
+       [image](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/assets/132129852/c2b793c3-6d81-424e-a167-3b1e584cef6f)
 * 怎么回退版本？
   
   - https://weixin.qq.com/cgi-bin/readtemplate?lang=zh_CN&t=weixin_faq_list&head=true
@@ -116,7 +116,7 @@ python  main.py -c
 
 
 * mac版本闪退
-  - macOS版本不能和windows版本一样随时hook小程序修改F12，只能先加载小程序后再hook（必须是有小程序缓存了，不然会闪退）
+  - [macOS版本](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.3/WeChatOpenDevTools-macos-x64.zip)不能和windows版本一样随时hook小程序修改F12，只能先加载小程序后再hook（必须是有小程序缓存了，不然会闪退）
   - 可以先启动多个需要调试的小程序后再运行软件然后再刷新小程序
   
 ## Star History

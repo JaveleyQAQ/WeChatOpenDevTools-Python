@@ -116,7 +116,7 @@ python  main.py -c
 
 
 * mac版本闪退
-  -  ~~[macOS版本](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.3/WeChatOpenDevTools-macos-x64.zip)不能和windows版本一样随时hook小程序修改F12，只能先加载小程序后再hook（必须是有小程序缓存了，不然会闪退）~~
+  -  ~~[macOS版本](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/)不能和windows版本一样随时hook小程序修改F12，只能先加载小程序后再hook（必须是有小程序缓存了，不然会闪退）~~
   - 可以先启动多个需要调试的小程序后再运行软件然后再刷新小程序
   
 ## Star History

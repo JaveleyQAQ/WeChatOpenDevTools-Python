@@ -6,8 +6,27 @@
 
 ---
 
+# 目录
+[1. 支持版本列表](#%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E7%89%88%E6%9C%AC)
 
-## 支持版本
+[2. 如何查看当前运行版本?](#%E5%A6%82%E4%BD%95%E6%9F%A5%E7%9C%8B%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E7%89%88%E6%9C%AC)
+  - [windows](#windows)
+  - [mac](#mac)
+    
+[3. 食用方法](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python?tab=readme-ov-file#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
+
+ - [开启小程序F12](#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
+
+ - [开启微信内置浏览器F12](#%E5%BC%80%E5%90%AF%E5%BE%AE%E4%BF%A1%E5%86%85%E7%BD%AE%E6%B5%8F%E8%A7%88%E5%99%A8F12)
+
+[4. 常见问题](#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
+
+
+---
+
+
+
+## 支持版本列表
 
 > 感谢志远大佬的WeChatOpenDevTool开源 代码只是把node改用python3重写，简单实现了一些自动化问题，重要代码都是原作者的。
 
@@ -48,14 +67,6 @@
 ps aux | grep 'WeChatAppEx' |  grep -v 'grep' | grep  "wmpf-mojo-handle" 
 ```
 
-
-## 目录
-
-[1. 开启小程序F12](#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
-
-[2. 开启微信内置浏览器F12](#%E5%BC%80%E5%90%AF%E5%BE%AE%E4%BF%A1%E5%86%85%E7%BD%AE%E6%B5%8F%E8%A7%88%E5%99%A8F12)
-
-[3. 常见问题](#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)
 
 ## 食用方法
 

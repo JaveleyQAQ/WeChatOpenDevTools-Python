@@ -54,9 +54,6 @@ function sendMessage(msg) {
 
 
 function replaceParams() {
-  if () {
-    
-  }
     Interceptor.attach(address.LaunchAppletBegin, {
         onEnter(args) {
             send("[+] HOOK到小程序加载! " + readStdString(args[1]))

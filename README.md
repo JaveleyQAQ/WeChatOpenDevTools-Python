@@ -31,7 +31,7 @@
 
 | Mac x64微信版本              | 是否为最新版   | x             
 | ----------------            | ------------ | ------------ 
-| MacWechat/3.8.7(0x13080712) | ✅           |用前阅读 [3. 常见问题](#%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98)             
+| MacWechat/3.8.7(0x13080712) | ✅           | [点我下载](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.3.1/WeChatOpenDevTools-macos-x64.zip)            
 
 
 

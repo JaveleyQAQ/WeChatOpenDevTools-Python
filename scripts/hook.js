@@ -6,6 +6,7 @@ var base = module.base;
 // console.log("模块地址:",module.base);
 // console.log("大小:",module.size);
 
+
 Object.keys(address).forEach(key => {
     key != "Version" ? address[key] = base.add(address[key]) : false
    
@@ -53,6 +54,9 @@ function sendMessage(msg) {
 
 
 function replaceParams() {
+  if () {
+    
+  }
     Interceptor.attach(address.LaunchAppletBegin, {
         onEnter(args) {
             send("[+] HOOK到小程序加载! " + readStdString(args[1]))
@@ -134,6 +138,15 @@ function setupInterceptor() {
                 }
             })
             break;
+
+        case 9129:
+          Interceptor.attach(address.SwitchVersion, {
+            onEnter(args) {
+                this.context.r8=  this.context.rax
+                sendMessage()
+            }
+        })
+        break;
 
 
 

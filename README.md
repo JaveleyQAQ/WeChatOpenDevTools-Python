@@ -13,7 +13,7 @@
   - [windows](#windows)
   - [mac](#mac)
     
-[3. 食用方法](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python?tab=readme-ov-file#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
+[3. 食用方法](#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
 
  - [开启小程序F12](#%E9%A3%9F%E7%94%A8%E6%96%B9%E6%B3%95)
 
@@ -130,7 +130,7 @@ python  main.py -c
 * mac版本闪退
   -  ~~[macOS版本](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/)不能和windows版本一样随时hook小程序修改F12，只能先加载小程序后再hook（必须是有小程序缓存了，不然会闪退）~~
   - 可以先启动多个需要调试的小程序后再运行软件然后再刷新小程序
-  
+* mac版本提示 [ Error: Unable to access process with pid xxx from the current user account](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/issues/49)
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=javeleyqaq/WeChatOpenDevTools-Python&type=Date)](https://star-history.com/#javeleyqaq/WeChatOpenDevTools-Python&Date)

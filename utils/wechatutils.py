@@ -1,4 +1,4 @@
-import os,re,winreg
+import os,re,sys
 import psutil,subprocess
 from utils.colors import Color
 
@@ -6,6 +6,11 @@ class WechatUtils:
     def __init__(self):
         self.configs_path = self.get_configs_path()
         self.version_list = self.get_version_list()
+        if sys.platform.startswith('win'):
+            import winreg 
+        else:
+            winreg = None
+            
         # self.pid , self.version =  self.get_wechat_pid_and_version()
         # if self.pid is None and self.version is None:
         #     self.print_process_not_found_message()

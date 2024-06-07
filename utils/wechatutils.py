@@ -1,5 +1,5 @@
 import os,re,winreg
-import psutil
+import psutil,subprocess
 from utils.colors import Color
 
 class WechatUtils:
@@ -12,7 +12,7 @@ class WechatUtils:
 
     def get_configs_path(self):
         current_path = os.path.abspath(__file__)
-        relative_path = '..\\configs\\'
+        relative_path = '../configs/'
         return os.path.join(os.path.dirname(current_path), relative_path)
 
     def get_version_list(self):
@@ -67,4 +67,13 @@ class WechatUtils:
     def print_process_not_found_message(self):
         print(Color.RED + "[-] 未找到匹配版本的微信进程或微信未运行" + Color.END)
 
+    def get_wechat_pid_and_version_mac(self):
+        try:
+            pid_command="ps aux | grep 'WeChatAppEx' |  grep -v 'grep' | grep ' --client_version' | grep '-user-agent=' | awk '{print $2}' | tail -n 1"
+            version_command = "ps aux | grep 'WeChatAppEx' |  grep -v 'grep' | grep ' --client_version' | grep '-user-agent=' | grep -oE 'MacWechat/([0-9]+\.)+[0-9]+\(0x\d+\)' |  grep -oE '(0x\d+)' | sed 's/0x//g' | head -n 1"
+            pid  = subprocess.run(pid_command, shell=True, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.replace("\n","")
+            version  = subprocess.run(version_command, shell=True, check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE).stdout.replace("\n","")
+            return int(pid),version
+        except subprocess.CalledProcessError as e:
+            return e.stderr
 

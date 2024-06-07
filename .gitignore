@@ -1,1 +1,3 @@
 frida-example
+.DS_Store
+__pycache__

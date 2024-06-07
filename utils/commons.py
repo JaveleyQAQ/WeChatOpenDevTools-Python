@@ -2,7 +2,7 @@
 
 from utils.colors import Color
 from utils.wechatutils import WechatUtils
-import frida,sys,time
+import frida,sys,time,platform
 
 
 class Commons:
@@ -41,10 +41,13 @@ class Commons:
 
     def load_wechatEx_configs(self):
         path = self.wechatutils_instance.get_configs_path()
-        pid, version = self.wechatutils_instance.get_wechat_pid_and_version()
+        if get_cpu_architecture() == "MacOS x64":
+            pid, version = self.wechatutils_instance.get_wechat_pid_and_version_mac()
+        else:
+            pid, version = self.wechatutils_instance.get_wechat_pid_and_version()
         if pid or version is not None:
-            wehcatEx_hookcode = open(path + "..\\scripts\\hook.js", "r", encoding="utf-8").read()
-            wechatEx_addresses = open(path + "..\\configs\\address_{}_x64.json".format(version)).read()
+            wehcatEx_hookcode = open(path + "../scripts/hook.js", "r", encoding="utf-8").read()
+            wechatEx_addresses = open(path + "../configs/address_{}_x64.json".format(version)).read()
             wehcatEx_hookcode = "var address=" + wechatEx_addresses + wehcatEx_hookcode
             self.inject_wehcatEx(pid, wehcatEx_hookcode)
         else:
@@ -68,3 +71,13 @@ class Commons:
             return 0
         self.load_wechatEXE_configs()
         self.load_wechatEx_configs()
+
+
+def get_cpu_architecture():
+        try:
+            cpu_arch = platform.platform().lower()
+            if "64bit" in cpu_arch and "macos" in cpu_arch:
+                return "MacOS x64"
+        except Exception as e:
+            print(Color.RED, f"[-] Error detecting CPU arc: {e} ", Color.END)
+            return "Windows"

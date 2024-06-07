@@ -50,7 +50,7 @@
 
 | Mac x64微信版本              | 是否为最新版   | x             
 | ----------------            | ------------ | ------------ 
-| MacWechat/3.8.7(0x13080712) | ✅           | [点我下载](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.3.1/WeChatOpenDevTools-macos-x64.zip)            
+| MacWechat/3.8.8(0x13080811) | ✅           | [点我下载](https://github.com/JaveleyQAQ/WeChatOpenDevTools-Python/releases/download/0.3.1/WeChatOpenDevTools-macos-x64.zip)            
 
 
 

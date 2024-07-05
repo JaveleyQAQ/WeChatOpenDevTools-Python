@@ -1,18 +1,4 @@
 
-var wechatProcesses = [];
-Process.enumerateModules({
-    onMatch: function(module){
-        if(module.name.startsWith("WeChatAppEx")){
-            wechatProcesses.push(module);
-            console.log('Found WeChatAppEx module: ' + module.name + ' at ' + module.base);
-        }
-    },
-    onComplete: function(){
-        console.log('Module enumeration completed. Found ' + wechatProcesses.length + ' WeChatAppEx modules.');
-    }
-});
-
-
 //获取WeChatAppEx.exe的基址
 var module = Process.findModuleByName("WeChatAppEx.exe") || Process.findModuleByName('WeChatAppEx Framework')
 

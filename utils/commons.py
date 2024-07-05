@@ -1,18 +1,19 @@
-#commons.py //2024年3月5日23点25分
-
+# commons.py
 from utils.colors import Color
 from utils.wechatutils import WechatUtils
-import frida,sys,time,platform
-
+import frida
+import sys
+import time
+import platform
 
 class Commons:
     def __init__(self):
         self.wechatutils_instance = WechatUtils()
         self.device = frida.get_local_device()
         self.process = self.device.enumerate_processes()
-        self.pid = -1
         self.version_list = []
         self.configs_path = ""
+        self.active_sessions = []
 
     def onMessage(self, message, data):
         if message['type'] == 'send':
@@ -20,13 +21,17 @@ class Commons:
         elif message['type'] == 'error':
             print(Color.RED + message['stack'], Color.END)
 
-    def inject_wehcatEx(self, pid, code):
-        session = frida.attach(pid)
-        script = session.create_script(code)
-        script.on("message", self.onMessage)
-        script.load()
-        sys.stdin.read()
-        # session.detach()
+    def inject_wechatEx(self, pid, code):
+        try:
+            session = frida.attach(pid)
+            script = session.create_script(code)
+            script.on("message", self.onMessage)
+            script.load()
+            print(f"Successfully injected into WeChat PID: {pid}")
+            return session
+        except Exception as e:
+            print(f"Error injecting into WeChat PID {pid}: {e}")
+            return None
 
     def inject_wechatDLL(self, path, code):
         pid = self.device.spawn(path)
@@ -37,47 +42,70 @@ class Commons:
         self.device.resume(pid)
         time.sleep(10)
         session.detach()
-        # sys.stdin.read()
 
     def load_wechatEx_configs(self):
         path = self.wechatutils_instance.get_configs_path()
         if get_cpu_architecture() == "MacOS x64":
-            pid, version = self.wechatutils_instance.get_wechat_pid_and_version_mac()
+            wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions_mac()
         else:
-            pid, version = self.wechatutils_instance.get_wechat_pid_and_version()
-        if pid or version is not None:
-            wehcatEx_hookcode = open(path + "../scripts/hook.js", "r", encoding="utf-8").read()
-            wechatEx_addresses = open(path + "../configs/address_{}_x64.json".format(version)).read()
-            wehcatEx_hookcode = "var address=" + wechatEx_addresses + wehcatEx_hookcode
-            self.inject_wehcatEx(pid, wehcatEx_hookcode)
+            wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions()
+
+        if wechat_instances:
+            for pid, version in wechat_instances:
+                try:
+                    wechatEx_hookcode = open(path + "../scripts/hook.js", "r", encoding="utf-8").read()
+                    wechatEx_addresses = open(path + f"../configs/address_{version}_x64.json").read()
+                    wechatEx_hookcode = "var address=" + wechatEx_addresses + wechatEx_hookcode
+                    session = self.inject_wechatEx(pid, wechatEx_hookcode)
+                    if session:
+                        self.active_sessions.append(session)
+                    print(f"Injected into WeChat instance PID: {pid}, Version: {version}")
+                except Exception as e:
+                    print(f"Error injecting into WeChat PID {pid}: {e}")
         else:
             self.wechatutils_instance.print_process_not_found_message()
 
+        # 管理会话
+        while self.active_sessions:
+            self.manage_sessions()
+            time.sleep(5)  # 每5秒检查一次
+
     def load_wechatEXE_configs(self):
-        pid, version = self.wechatutils_instance.get_wechat_pid_and_version()
-        if pid or version is not None:
-            print(Color.RED+f"[-] 请退出微信后在执行该命令 "+Color.END)
+        wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions()
+        if wechat_instances:
+            print(Color.RED + f"[-] 请退出所有微信实例后再执行该命令 " + Color.END)
             return 0
         
         wechatEXEpath = self.wechatutils_instance.find_installation_path("微信")
         path = self.wechatutils_instance.get_configs_path()
-        wehcatEXE_hookcode = open(path + "..\\scripts\\WechatWin.dll\\hook.js", "r", encoding="utf-8").read()
-        self.inject_wechatDLL(wechatEXEpath, wehcatEXE_hookcode)
+        wechatEXE_hookcode = open(path + "..\\scripts\\WechatWin.dll\\hook.js", "r", encoding="utf-8").read()
+        self.inject_wechatDLL(wechatEXEpath, wechatEXE_hookcode)
 
     def load_wechatEXE_and_wechatEx(self):
-        pid, version = self.wechatutils_instance.get_wechat_pid_and_version()
-        if pid or version is not None:
-            print(Color.RED+f"[-] 请关闭微信后在执行该命令 "+Color.END)
+        wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions()
+        if wechat_instances:
+            print(Color.RED + f"[-] 请关闭所有微信实例后再执行该命令 " + Color.END)
             return 0
         self.load_wechatEXE_configs()
         self.load_wechatEx_configs()
 
+    def manage_sessions(self):
+        for session in self.active_sessions[:]:  # 使用切片创建副本以便在迭代时修改
+            if session.is_detached:
+                print(f"Session {session} detached, removing from active sessions.")
+                self.active_sessions.remove(session)
 
 def get_cpu_architecture():
-        try:
-            cpu_arch = platform.platform().lower()
-            if "64bit" in cpu_arch and "macos" in cpu_arch:
-                return "MacOS x64"
-        except Exception as e:
-            print(Color.RED, f"[-] Error detecting CPU arc: {e} ", Color.END)
-            return "Windows"
+    try:
+        cpu_arch = platform.platform().lower()
+        if "64bit" in cpu_arch and "macos" in cpu_arch:
+            return "MacOS x64"
+        return "Windows"  # 默认返回Windows
+    except Exception as e:
+        print(Color.RED, f"[-] Error detecting CPU architecture: {e} ", Color.END)
+        return "Windows"
+
+# 主函数示例
+if __name__ == "__main__":
+    commons = Commons()
+    commons.load_wechatEx_configs()

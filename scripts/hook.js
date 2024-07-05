@@ -1,10 +1,26 @@
-;
+
+var wechatProcesses = [];
+Process.enumerateModules({
+    onMatch: function(module){
+        if(module.name.startsWith("WeChatAppEx")){
+            wechatProcesses.push(module);
+            console.log('Found WeChatAppEx module: ' + module.name + ' at ' + module.base);
+        }
+    },
+    onComplete: function(){
+        console.log('Module enumeration completed. Found ' + wechatProcesses.length + ' WeChatAppEx modules.');
+    }
+});
+
+
 //获取WeChatAppEx.exe的基址
 var module = Process.findModuleByName("WeChatAppEx.exe") || Process.findModuleByName('WeChatAppEx Framework')
+
 var base = module.base;
-// console.log("模块名称:",module.name);
-// console.log("模块地址:",module.base);
-// console.log("大小:",module.size);
+
+console.log("模块名称:",module.name);
+console.log("模块地址:",module.base);
+console.log("大小:",module.size);
 
 
 Object.keys(address).forEach(key => {

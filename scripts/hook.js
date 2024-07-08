@@ -1,9 +1,7 @@
-
+;
 //获取WeChatAppEx.exe的基址
 var module = Process.findModuleByName("WeChatAppEx.exe") || Process.findModuleByName('WeChatAppEx Framework')
-
 var base = module.base;
-
 // console.log("模块名称:",module.name);
 // console.log("模块地址:",module.base);
 // console.log("大小:",module.size);

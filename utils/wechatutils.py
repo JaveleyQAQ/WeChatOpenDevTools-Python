@@ -6,11 +6,7 @@ class WechatUtils:
     def __init__(self):
         self.configs_path = self.get_configs_path()
         self.version_list = self.get_version_list()
-        if sys.platform.startswith('win'):
-            import winreg 
-        else:
-            winreg = None
-            
+
         # self.pid , self.version =  self.get_wechat_pid_and_version()
         # if self.pid is None and self.version is None:
         #     self.print_process_not_found_message()
@@ -60,6 +56,7 @@ class WechatUtils:
     
     def find_installation_path(self, program_name):
         try:
+            import winreg
             reg_path = r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
             reg_key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, reg_path)
 

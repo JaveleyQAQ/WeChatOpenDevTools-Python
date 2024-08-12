@@ -167,7 +167,15 @@ function setupInterceptor() {
                 }
             })
             break;
-                
+            
+        case 9193:
+            Interceptor.attach(address.SwitchVersion, {
+                onEnter(args) {
+                    this.context.r8 = this.context.rax
+                    sendMessage()
+                }
+            })
+            break;
 
         default:
             console.log(address.Version);

@@ -27,10 +27,10 @@ class Commons:
             script = session.create_script(code)
             script.on("message", self.onMessage)
             script.load()
-            print(f"Successfully injected into WeChat PID: {pid}")
+            print(Color.GREEN + f"[+] 成功注入微信PID: {pid}", Color.END)
             return session
         except Exception as e:
-            print(f"Error injecting into WeChat PID {pid}: {e}")
+            print(Color.RED + f"[-] 注入微信失败PID {pid}: {e}", Color.END)
             return None
 
     def inject_wechatDLL(self, path, code):
@@ -59,9 +59,9 @@ class Commons:
                     session = self.inject_wechatEx(pid, wechatEx_hookcode)
                     if session:
                         self.active_sessions.append(session)
-                    print(f"Injected into WeChat instance PID: {pid}, Version: {version}")
+                    print(Color.GREEN +f"[+] 成功注入{version}小程序版本，PID: {pid}", Color.END)
                 except Exception as e:
-                    print(f"Error injecting into WeChat PID {pid}: {e}")
+                    print(Color.RED + f"[-] 注入{version}小程序版本失败！", Color.END)
         else:
             self.wechatutils_instance.print_process_not_found_message()
 

@@ -51,22 +51,94 @@ function sendMessage(msg) {
 }
 
 
+function isValidStdString(ptr) {
+    try {
+        // 读取 std::string 的标志字节（偏移23）
+        var flag = ptr.add(23).readU8();
+        
+        // 检查标志的有效性
+        if (flag == 0x80) {
+            // 堆分配：检查大小和容量是否合理
+            var size = ptr.add(8).readUInt();
+            var capacity = ptr.add(16).readUInt();
+            if (size > 0x10000 || capacity > 0x10000 || size > capacity) {
+                return false; // 不合理的大小
+            }
+            // 检查指针是否有效
+            var dataPtr = ptr.readPointer();
+            if (dataPtr.isNull()) return false;
+        } else if (flag > 23) {
+            // 栈分配的flag应该 <= 23
+            return false;
+        }
+        return true;
+    } catch (e) {
+        return false;
+    }
+}
+
+function safeReadStdString(ptr) {
+    if (!isValidStdString(ptr)) return null;
+    
+    try {
+        var flag = ptr.add(23).readU8();
+        if (flag == 0x80) {
+            var size = ptr.add(8).readUInt();
+            var dataPtr = ptr.readPointer();
+            // 限制最大读取大小，防止读取过大内存
+            if (size > 4096) return null;
+            return dataPtr.readUtf8String(size);
+        } else {
+            return ptr.readUtf8String(flag);
+        }
+    } catch (e) {
+        return null;
+    }
+}
+
 function replaceParams() {
     Interceptor.attach(address.LaunchAppletBegin, {
         onEnter(args) {
             send("[+] HOOK到小程序加载! " + readStdString(args[1]))
-            for (var i = 0; i < 0x1000; i += 8) {
+            
+            var foundAndModified = false;
+
+            for (var i = 600; i < 2048 && !foundAndModified; i += 8) {
                 try {
-                    var s = readStdString(args[2].add(i))
-                    var s1 = s.replaceAll('"enable_vconsole":false', '"enable_vconsole": true')
-                    // .replaceAll("md5", "md6")
-                    // .replaceAll('"frameset":false', '"frameset": true')
-                    //"frameset":false
+                    var ptr = args[2].add(i);
+                    
+                    // 使用安全的读取函数
+                    var s = safeReadStdString(ptr);
+                    
+                    // 只处理有效的字符串
+                    if (!s || s.length < 20) continue;
+                    
+                    // 检查是否包含目标配置
+                    if (s.indexOf('"enable_vconsole":false') === -1) continue;
+                    
+                    // 确认这是JSON配置字符串（包含多个关键字段）
+                    if (s.indexOf('"isAttrSync"') === -1 && s.indexOf('"scene_note"') === -1) continue;
+                    
+                    console.log("[*] 在偏移 " + i + " 找到目标配置");
+                    
+                    var s1 = s.replaceAll('"enable_vconsole":false', '"enable_vconsole": true');
+                    
                     if (s !== s1) {
-                        writeStdString(args[2].add(i), s1)
+                        try {
+                            writeStdString(ptr, s1);
+                            send("[+] 成功修改 enable_vconsole 配置");
+                            foundAndModified = true;
+                        } catch (writeErr) {
+                            console.log("[-] 写入失败: " + writeErr);
+                        }
                     }
                 } catch (a) {
+                    // 静默处理
                 }
+            }
+            
+            if (!foundAndModified) {
+                send("[-] 警告：未找到 enable_vconsole 配置");
             }
         }
     })

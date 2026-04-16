@@ -1,0 +1,9 @@
+{
+  "name": "wechatopendevtools-python",
+  "private": true,
+  "description": "Node helper dependencies for WeChat 4 remote debug bridging",
+  "dependencies": {
+    "protobufjs": "^7.4.0",
+    "ws": "^8.18.3"
+  }
+}

@@ -1,0 +1,12 @@
+[project]
+name = "wechatopendevtools-python"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "frida==16.6.6",
+    "psutil==5.9.7",
+    "pyfiglet==1.0.2",
+    "websockets==15.0.1",
+]

@@ -43,7 +43,31 @@ class Commons:
         time.sleep(10)
         session.detach()
 
-    def load_wechatEx_configs(self):
+    def load_wechatEx_configs(self, debug_port=9421, cdp_port=62000, wx4_options=None):
+        from utils.wechat4debug import WeChat4Debugger
+
+        wechat4_debugger = WeChat4Debugger(
+            debug_port=debug_port,
+            cdp_port=cdp_port,
+            options=wx4_options or {},
+        )
+        runtime = wechat4_debugger.detect_runtime()
+        if runtime is not None:
+            if wechat4_debugger.is_supported_version(runtime.version):
+                wechat4_debugger.run_forever(runtime)
+            else:
+                print(
+                    Color.YELLOW
+                    + f"[!] 检测到微信4/WMPF 运行时版本 {runtime.version}，但当前仓库未内置对应配置"
+                    + Color.END
+                )
+                print(
+                    Color.YELLOW
+                    + "[!] 请补充 configs/wx4 下的地址文件后再重试"
+                    + Color.END
+                )
+            return
+
         path = self.wechatutils_instance.get_configs_path()
         if get_cpu_architecture() == "MacOS x64":
             wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions_mac()
@@ -71,6 +95,17 @@ class Commons:
             time.sleep(5)  # 每5秒检查一次
 
     def load_wechatEXE_configs(self):
+        from utils.wechat4debug import WeChat4Debugger
+
+        runtime = WeChat4Debugger().detect_runtime()
+        if runtime is not None:
+            print(
+                Color.YELLOW
+                + "[!] 微信4 暂未适配内置浏览器 F12（-c），目前只支持小程序远程调试链路（-x）"
+                + Color.END
+            )
+            return 0
+
         wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions()
         if wechat_instances:
             print(Color.RED + f"[-] 请退出所有微信实例后再执行该命令 " + Color.END)
@@ -81,13 +116,33 @@ class Commons:
         wechatEXE_hookcode = open(path + "..\\scripts\\WechatWin.dll\\hook.js", "r", encoding="utf-8").read()
         self.inject_wechatDLL(wechatEXEpath, wechatEXE_hookcode)
 
-    def load_wechatEXE_and_wechatEx(self):
+    def load_wechatEXE_and_wechatEx(self, debug_port=9421, cdp_port=62000, wx4_options=None):
+        from utils.wechat4debug import WeChat4Debugger
+
+        runtime = WeChat4Debugger().detect_runtime()
+        if runtime is not None:
+            print(
+                Color.YELLOW
+                + "[!] 微信4 已切换为远程调试模式，-all 当前等价于 -x；内置浏览器 F12 仍未适配"
+                + Color.END
+            )
+            self.load_wechatEx_configs(
+                debug_port=debug_port,
+                cdp_port=cdp_port,
+                wx4_options=wx4_options,
+            )
+            return
+
         wechat_instances = self.wechatutils_instance.get_wechat_pids_and_versions()
         if wechat_instances:
             print(Color.RED + f"[-] 请关闭所有微信实例后再执行该命令 " + Color.END)
             return 0
         self.load_wechatEXE_configs()
-        self.load_wechatEx_configs()
+        self.load_wechatEx_configs(
+            debug_port=debug_port,
+            cdp_port=cdp_port,
+            wx4_options=wx4_options,
+        )
 
     def manage_sessions(self):
         for session in self.active_sessions[:]:  # 使用切片创建副本以便在迭代时修改
